@@ -5,6 +5,10 @@ import dns from "node:dns";
 import customerRoutes from './routes/customer.routes.js';
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import productRoutes from "./routes/product.routes.js";
+import wishlistRoutes from "./routes/wishlist.routes.js";
+import cartRoutes from "./routes/cart.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 
 dotenv.config()
 
@@ -15,22 +19,18 @@ const app = express()
 const port = process.env.PORT || 8084
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true
 }))
 
 app.use(express.json())
 app.use(cookieParser());
 
-mongoose.connect(process.env.DB_URL, { dbName: "shopkart" }).then(()=>{
-    console.log("DB Connected")
-}).catch((error)=>{
-    console.log('DB Connection failed')
-    console.log(error.message)
-})
-
-
 app.use('/customers', customerRoutes)
+app.use('/products', productRoutes)
+app.use('/wishlist', wishlistRoutes)
+app.use('/cart', cartRoutes)
+app.use('/orders', orderRoutes)
 
 
 app.get('/', (req,res) => {
@@ -41,6 +41,16 @@ app.get('/', (req,res) => {
     })
 })
 
-app.listen(port, () =>{
-    console.log(`Server started at ${port}`)
-})
+// Start accepting requests only after the database is ready.
+async function startServer() {
+    try {
+        await mongoose.connect(process.env.DB_URL, { dbName: "shopkart" });
+        console.log("DB Connected");
+        app.listen(port, () => console.log(`Server started at ${port}`));
+    } catch (error) {
+        console.error("DB Connection failed:", error.message);
+        process.exitCode = 1;
+    }
+}
+
+startServer();

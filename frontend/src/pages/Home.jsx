@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar.jsx";
 import { useAuth } from "../context/authContext.js";
+import { Link } from "react-router-dom";
 
 function Home() {
     const { user } = useAuth();
@@ -13,7 +14,8 @@ function Home() {
                     <div>
                         <p className="eyebrow">Your ShopKart account</p>
                         <h1>Welcome, {firstName}.</h1>
-                        <p>Your authentication flow is working. Next, we’ll fill this space with products from MongoDB.</p>
+                        <p>Your account is ready. Browse the product catalogue, save favourites, or manage your cart.</p>
+                        <Link className="button button-light home-cta" to="/products">Browse products</Link>
                     </div>
                     <div className="success-badge"><span>✓</span>Authenticated</div>
                 </section>

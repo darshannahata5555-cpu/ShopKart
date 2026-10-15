@@ -1,0 +1,42 @@
+import mongoose from "mongoose";
+
+// The schema describes the shape and validation rules of a Product document.
+const productSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        price: {
+            type: Number,
+            required: true,
+            min: 0.01
+        },
+        category: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        image: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        stock: {
+            type: Number,
+            required: true,
+            min: 0
+        }
+    },
+    { timestamps: true }
+);
+
+const Product = mongoose.model("Product", productSchema);
+
+export default Product;
